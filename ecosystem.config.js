@@ -3,7 +3,7 @@ module.exports = {
     name: '3300_ATLAS_DERMATORIGICO_GM_FRONT',
     script: 'npm',
     args: 'start',
-    cwd: '/var/www/atlas/fronten',
+    cwd: '/var/www/atlas/frontend',
     instances: 1,
     autorestart: true,
     watch: false,
