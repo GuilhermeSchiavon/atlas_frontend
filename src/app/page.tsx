@@ -1,18 +1,10 @@
+'use client';
+
 import Link from 'next/link';
-import { Metadata } from 'next';
 import SearchBar from '@/components/SearchBar';
 import ChapterGrid from '@/components/ChapterGrid';
 import PublicationCard from '@/components/PublicationCard';
-
-export const metadata: Metadata = {
-  title: 'Atlas Dermatológico do Genital Masculino - Início',
-  description: 'Atlas científico especializado em dermatologia do genital masculino com publicações médicas de alta qualidade para profissionais da saúde.',
-  openGraph: {
-    title: 'Atlas Dermatológico do Genital Masculino',
-    description: 'Atlas científico especializado em dermatologia do genital masculino',
-    type: 'website',
-  },
-};
+import { usePublications } from '@/hooks/useApi';
 
 // Mock data - replace with API calls
 const mockChapters = [
@@ -21,23 +13,11 @@ const mockChapters = [
   { id: 3, number: 3, title: "Biópsia cutânea do genital masculino", slug: "biopsia-cutanea-do-genital-masculino", status: 'ativo' as const },
 ];
 
-const mockPublications = [
-  {
-    id: 1,
-    title: "Caso de Pápulas Perláceas",
-    diagnosis: "Pápulas perláceas do pênis",
-    body_location: 'glande' as const,
-    status: 'approved' as const,
-    chapter_id: 6,
-    user_id: 1,
-    createdAt: '2024-01-15',
-    updatedAt: '2024-01-15',
-    Chapter: { id: 6, number: 6, title: "Pápulas perláceas do pênis (Tyson)", slug: "papulas-perlaceas", status: 'ativo' as const },
-    Images: [{ id: 1, publication_id: 1, filename: 'image1.jpg', path_local: '/uploads/image1.jpg', format: '.jpg', size: 1024, order: 1 }]
-  },
-];
+
 
 export default function HomePage() {
+  const { publications, isLoading, error } = usePublications({ status: 'approved' });
+
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
@@ -45,7 +25,8 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Atlas Dermatológico do Genital Masculino
+              Atlas de Dermatológia do 
+              <span className='text-secondary'> Genital Masculino</span>
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-gray-200">
               Referência científica em dermatologia genital masculina para profissionais da saúde
@@ -97,27 +78,30 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Latest Publications */}
-      <section className="py-16 bg-gray-50">
+      {/* Publications Section */}
+      <section className="py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-text mb-4">
-              Publicações Recentes
-            </h2>
-            <p className="text-gray-600">
-              Últimas contribuições aprovadas pela comunidade médica
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {mockPublications.map((publication) => (
-              <PublicationCard key={publication.id} publication={publication} />
-            ))}
-          </div>
-          <div className="text-center mt-8">
-            <Link href="/publications" className="btn-primary text-lg px-8 py-3">
-              Ver Todas as Publicações
-            </Link>
-          </div>
+          <h2 className="text-2xl font-bold mb-6 text-center">Casos Clínicos Recentes</h2>
+          
+          {isLoading ? (
+            <div className="flex justify-center py-8">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            </div>
+          ) : error ? (
+            <div className="text-center py-8 text-red-500">
+              Erro ao carregar publicações: {error.message}
+            </div>
+          ) : publications.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              Nenhuma publicação encontrada.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+              {publications.map((publication) => (
+                <PublicationCard key={publication.id} publication={publication} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -130,7 +114,7 @@ export default function HomePage() {
                 Sobre o Atlas
               </h2>
               <p className="text-gray-600 mb-4">
-                O Atlas Dermatológico do Genital Masculino é uma iniciativa científica 
+                O Atlas de Dermatologia do Genital Masculino é uma iniciativa científica 
                 que reúne casos clínicos e conhecimento especializado em dermatologia 
                 genital masculina.
               </p>

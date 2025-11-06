@@ -1,29 +1,27 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import './globals.css'
-import Navbar from '@/components/Navbar'
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Atlas Dermatológico do Genital Masculino',
-  description: 'Atlas científico para dermatologia genital masculina com publicações médicas especializadas',
-  keywords: 'dermatologia, genital masculino, atlas médico, publicações científicas',
-}
+  title: 'Atlas de Dermatologia do Genital Masculino - Início',
+  description: 'Atlas científico especializado em dermatologia do genital masculino com publicações médicas de alta qualidade para profissionais da saúde.',
+  openGraph: {
+    title: 'Atlas de Dermatologia do Genital Masculino',
+    description: 'Atlas científico especializado em dermatologia do genital masculino',
+    type: 'website',
+  },
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="pt-BR">
-      <body className={inter.className}>
-        <Navbar />
-        <main className="min-h-screen">
-          {children}
-        </main>
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
-  )
+  );
 }

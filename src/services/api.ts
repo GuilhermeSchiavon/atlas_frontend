@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 import { AuthResponse, User, Chapter, Publication } from '@/types';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1000/api/v2';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1000';
 
 class ApiService {
   private getAuthHeaders() {
@@ -10,7 +10,7 @@ class ApiService {
   }
 
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const url = `${API_BASE_URL}${endpoint}`;
+    const url = `${API_BASE_URL}/api/v2/${endpoint}`;
     const config: RequestInit = {
       headers: {
         'Content-Type': 'application/json',

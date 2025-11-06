@@ -1,6 +1,6 @@
-# Atlas Dermatológico do Genital Masculino - Frontend
+# Atlas de Dermatologia do Genital Masculino - Frontend
 
-Frontend desenvolvido em Next.js para o Atlas Dermatológico do Genital Masculino.
+Frontend desenvolvido em Next.js para o Atlas de Dermatologia do Genital Masculino.
 
 ## Tecnologias
 
@@ -75,7 +75,7 @@ npm start
 Crie o arquivo `.env.local`:
 
 ```
-NEXT_PUBLIC_API_URL=http://localhost:1000/api/v2
+NEXT_PUBLIC_API_URL=http://localhost:1000
 ```
 
 ## Integração com Backend

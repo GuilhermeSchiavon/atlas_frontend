@@ -85,11 +85,11 @@ export default function PublicationPage({ params }: PublicationPageProps) {
               
               {publication.Images && publication.Images.length > 0 && (
                 <div className="space-y-4">
-                  {publication.Images.map((image, index) => (
+                  {(publication.Images ?? []).map((image, index) => (
                     <div key={image.id} className="relative">
                       <div className="aspect-video bg-gray-100 overflow-hidden">
                         <Image
-                          src={`/api/images/${image.id}`}
+                          src={`${process.env.NEXT_PUBLIC_API_URL}/${image.path_local}`}
                           alt={`${publication.title} - Imagem ${index + 1}`}
                           width={800}
                           height={600}
@@ -97,7 +97,7 @@ export default function PublicationPage({ params }: PublicationPageProps) {
                         />
                       </div>
                       <p className="text-sm text-gray-500 mt-2">
-                        Imagem {index + 1} de {publication.Images.length}
+                        Imagem {index + 1} de {(publication.Images ? publication.Images.length : 0)}
                       </p>
                     </div>
                   ))}

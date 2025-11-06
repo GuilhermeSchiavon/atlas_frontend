@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { getUser } from '@/utils/auth';
 import { User } from '@/types';
 import PublicationCard from '@/components/PublicationCard';
+import { usePublications } from '@/hooks/useApi';
 
 export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);
@@ -27,35 +28,8 @@ export default function ProfilePage() {
     }
   }, [router, searchParams]);
 
-  // Mock publications data
-  const mockPublications = [
-    {
-      id: 1,
-      title: "Caso de pápulas perláceas",
-      diagnosis: "Pápulas perláceas do pênis",
-      body_location: 'glande' as const,
-      status: 'approved' as const,
-      chapter_id: 6,
-      user_id: 1,
-      createdAt: '2024-01-15',
-      updatedAt: '2024-01-15',
-      Chapter: { id: 6, number: 6, title: "Pápulas perláceas do pênis", slug: "papulas-perlaceas", status: 'ativo' as const },
-      Images: [{ id: 1, publication_id: 1, filename: 'image1.jpg', path_local: '/uploads/image1.jpg', format: '.jpg', size: 1024, order: 1 }]
-    },
-    {
-      id: 2,
-      title: "Caso de dermatite seborreica",
-      diagnosis: "Dermatite seborreica genital",
-      body_location: 'escroto' as const,
-      status: 'pending' as const,
-      chapter_id: 19,
-      user_id: 1,
-      createdAt: '2024-01-10',
-      updatedAt: '2024-01-10',
-      Chapter: { id: 19, number: 19, title: "Psoríase e Dermatite Seborreica", slug: "psoriase-dermatite", status: 'ativo' as const },
-      Images: [{ id: 2, publication_id: 2, filename: 'image2.jpg', path_local: '/uploads/image2.jpg', format: '.jpg', size: 1024, order: 1 }]
-    }
-  ];
+  // Buscar publicações do usuário
+  const { publications, isLoading, error } = usePublications();
 
   if (!user) {
     return (
@@ -65,9 +39,27 @@ export default function ProfilePage() {
     );
   }
 
-  const approvedPublications = mockPublications.filter(p => p.status === 'approved');
-  const pendingPublications = mockPublications.filter(p => p.status === 'pending');
-  const rejectedPublications = mockPublications.filter(p => p.status === 'rejected');
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-24 w-24 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-red-500">Erro ao carregar publicações: {error.message}</div>
+      </div>
+    );
+  }
+
+  // Filtrar publicações do usuário (mesmo para admin)
+  const userPublications = publications.filter(p => p.user_id === user.id);
+  const approvedPublications = userPublications.filter(p => p.status === 'approved');
+  const pendingPublications = userPublications.filter(p => p.status === 'pending');
+  const rejectedPublications = userPublications.filter(p => p.status === 'rejected');
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -112,7 +104,7 @@ export default function ProfilePage() {
           <div className="border-t border-gray-200 px-6 py-4">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="text-center">
-                <div className="text-2xl font-bold text-primary">{mockPublications.length}</div>
+                <div className="text-2xl font-bold text-primary">{userPublications.length}</div>
                 <div className="text-sm text-gray-600">Total de Publicações</div>
               </div>
               <div className="text-center">
@@ -168,9 +160,9 @@ export default function ProfilePage() {
                   </a>
                 </div>
 
-                {mockPublications.length > 0 ? (
+                {userPublications.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {mockPublications.map((publication) => (
+                    {userPublications.map((publication) => (
                       <PublicationCard key={publication.id} publication={publication} />
                     ))}
                   </div>

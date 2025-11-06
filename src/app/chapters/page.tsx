@@ -28,7 +28,7 @@ export default function ChaptersPage() {
             Capítulos do Atlas
           </h1>
           <p className="text-gray-600 text-lg mb-8">
-            Explore todos os capítulos do Atlas Dermatológico do Genital Masculino
+            Explore todos os capítulos do Atlas de Dermatologia do Genital Masculino
           </p>
           <SearchBar />
         </div>

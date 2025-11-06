@@ -14,7 +14,7 @@ export default function PublicationCard({ publication }: PublicationCardProps) {
       <div className="aspect-video bg-gray-200 relative">
         {firstImage ? (
           <Image
-            src={`/api/images/${firstImage.id}`}
+            src={`${process.env.NEXT_PUBLIC_API_URL}/${firstImage.path_local}`}
             alt={publication.title}
             fill
             className="object-cover"
