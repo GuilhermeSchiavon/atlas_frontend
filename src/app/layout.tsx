@@ -1,14 +1,15 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import Navbar from '@/components/Navbar';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Atlas de Dermatologia do Genital Masculino - Início',
+  title: 'Atlas Dermatológico do Genital Masculino - Início',
   description: 'Atlas científico especializado em dermatologia do genital masculino com publicações médicas de alta qualidade para profissionais da saúde.',
   openGraph: {
-    title: 'Atlas de Dermatologia do Genital Masculino',
+    title: 'Atlas Dermatológico do Genital Masculino',
     description: 'Atlas científico especializado em dermatologia do genital masculino',
     type: 'website',
   },
@@ -21,7 +22,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <Navbar />
+        {children}
+      </body>
     </html>
   );
 }
