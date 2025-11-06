@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getUser } from '@/utils/auth';
+import { User } from '@/types';
 import ImageUpload from '@/components/ImageUpload';
 
 const BODY_LOCATIONS = [
@@ -31,7 +32,7 @@ const mockChapters = Array.from({ length: 58 }, (_, i) => ({
 }));
 
 export default function SubmitPage() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [formData, setFormData] = useState({

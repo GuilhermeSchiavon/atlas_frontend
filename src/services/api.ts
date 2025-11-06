@@ -4,18 +4,18 @@ import { AuthResponse, User, Chapter, Publication } from '@/types';
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1000';
 
 class ApiService {
-  private getAuthHeaders() {
+  private getAuthHeaders(): Record<string, string> {
     const token = Cookies.get('token');
     return token ? { Authorization: `Bearer ${token}` } : {};
   }
 
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const url = `${API_BASE_URL}/api/v2/${endpoint}`;
+    const url = `${API_BASE_URL}${endpoint}`;
     const config: RequestInit = {
       headers: {
         'Content-Type': 'application/json',
         ...this.getAuthHeaders(),
-        ...options.headers,
+        ...(options.headers as Record<string, string> || {}),
       },
       ...options,
     };
@@ -37,7 +37,7 @@ class ApiService {
 
   // Auth
   async login(email: string, password: string): Promise<AuthResponse> {
-    return this.request<AuthResponse>('/users/login', {
+    return this.request<AuthResponse>('/api/v2/users/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     });
@@ -50,20 +50,20 @@ class ApiService {
     password: string;
     crm?: string;
   }): Promise<AuthResponse> {
-    return this.request<AuthResponse>('/users/register', {
+    return this.request<AuthResponse>('/api/v2/users/register', {
       method: 'POST',
       body: JSON.stringify(userData),
     });
   }
 
   async getProfile(): Promise<{ user: User }> {
-    return this.request<{ user: User }>('/users/profile');
+    return this.request<{ user: User }>('/api/v2/users/profile');
   }
 
   // Chapters
   async getChapters(): Promise<{ chapters: Chapter[] }> {
     try {
-      return await this.request<{ chapters: Chapter[] }>('/chapters');
+      return await this.request<{ chapters: Chapter[] }>('/api/v2/chapters');
     } catch (error) {
       console.error('Error fetching chapters:', error);
       throw error;
@@ -71,7 +71,7 @@ class ApiService {
   }
 
   async getChapter(idOrSlug: string): Promise<{ chapter: Chapter }> {
-    return this.request<{ chapter: Chapter }>(`/chapters/${idOrSlug}`);
+    return this.request<{ chapter: Chapter }>(`/api/v2/chapters/${idOrSlug}`);
   }
 
   // Publications
@@ -84,7 +84,7 @@ class ApiService {
   }): Promise<{ publications: Publication[]; total: number; pages: number }> {
     const query = params ? `?${new URLSearchParams(params as any).toString()}` : '';
     try {
-      return await this.request<{ publications: Publication[]; total: number; pages: number }>(`/publications${query}`);
+      return await this.request<{ publications: Publication[]; total: number; pages: number }>(`/api/v2/publications${query}`);
     } catch (error) {
       console.error('Error fetching publications:', error);
       throw error;
@@ -92,12 +92,12 @@ class ApiService {
   }
 
   async getPublication(id: string): Promise<{ publication: Publication }> {
-    return this.request<{ publication: Publication }>(`/publications/${id}`);
+    return this.request<{ publication: Publication }>(`/api/v2/publications/${id}`);
   }
 
   async createPublication(formData: FormData): Promise<{ publication: Publication }> {
     const token = Cookies.get('token');
-    const response = await fetch(`${API_BASE_URL}/publications/upload`, {
+    const response = await fetch(`${API_BASE_URL}/api/v2/publications/upload`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
