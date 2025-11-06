@@ -32,7 +32,7 @@ export default function HomePage() {
               Referência científica em dermatologia genital masculina para profissionais da saúde
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/chapters" className="btn-secondary text-lg px-8 py-3">
+              <Link href="/capitulos" className="btn-secondary text-lg px-8 py-3">
                 Explorar Capítulos
               </Link>
               <Link href="/auth/register" className="border border-white text-white px-8 py-3 hover:bg-white hover:text-primary transition-colors">
@@ -71,7 +71,7 @@ export default function HomePage() {
           </div>
           <ChapterGrid chapters={mockChapters} />
           <div className="text-center mt-8">
-            <Link href="/chapters" className="btn-primary text-lg px-8 py-3">
+            <Link href="/capitulos" className="btn-primary text-lg px-8 py-3">
               Ver Todos os Capítulos
             </Link>
           </div>
