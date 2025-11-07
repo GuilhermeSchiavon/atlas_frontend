@@ -16,7 +16,7 @@ export default function Navbar() {
   const handleLogout = () => {
     logout();
     setUser(null);
-    window.location.href = '/';
+    window.location.reload();
   };
 
   return (

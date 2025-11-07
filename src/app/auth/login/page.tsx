@@ -26,7 +26,7 @@ export default function LoginPage() {
       setAuthToken(response.token);
       setUser(response.user);
       
-      router.push('/');
+      window.location.href = '/';
     } catch (err: any) {
       setError(err.message || 'Email ou senha inválidos');
     } finally {
