@@ -1,10 +1,13 @@
 'use client';
 
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 import SearchBar from '@/components/SearchBar';
 import ChapterGrid from '@/components/ChapterGrid';
 import PublicationCard from '@/components/PublicationCard';
 import { usePublications } from '@/hooks/useApi';
+import { getUser } from '@/utils/auth';
+import { User } from '@/types';
 
 // Mock data - replace with API calls
 const mockChapters = [
@@ -16,7 +19,12 @@ const mockChapters = [
 
 
 export default function HomePage() {
+  const [user, setUser] = useState<User | null>(null);
   const { publications, isLoading, error } = usePublications({ status: 'approved' });
+
+  useEffect(() => {
+    setUser(getUser());
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
@@ -25,7 +33,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Atlas de Dermatológia do 
+              Atlas de Dermatologia do 
               <span className='text-secondary'> Genital Masculino</span>
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-gray-200">
@@ -35,7 +43,7 @@ export default function HomePage() {
               <Link href="/capitulos" className="btn-secondary text-lg px-8 py-3">
                 Explorar Capítulos
               </Link>
-              <Link href="/auth/register" className="border border-white text-white px-8 py-3 hover:bg-white hover:text-primary transition-colors">
+              <Link href={user ? "/submit" : "/auth/register"} className="border border-white text-white px-8 py-3 hover:bg-white hover:text-primary transition-colors">
                 Contribuir
               </Link>
             </div>

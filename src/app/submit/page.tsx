@@ -137,7 +137,7 @@ export default function SubmitPage() {
               </label>
               <ImageUpload images={images} setImages={setImages} />
               <p className="text-sm text-gray-500 mt-2">
-                Máximo de 5 imagens. Formatos aceitos: JPG, PNG, GIF (até 10MB cada)
+                Máximo de 10 imagens. Formatos aceitos: JPG, PNG, GIF (até 10MB cada)
               </p>
             </div>
 

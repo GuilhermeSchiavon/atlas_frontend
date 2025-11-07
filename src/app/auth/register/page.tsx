@@ -95,12 +95,14 @@ export default function RegisterPage() {
         <h2 className="mt-6 text-center text-3xl font-bold text-text">
           Criar nova conta
         </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
-          Ou{' '}
-          <Link href="/auth/login" className="font-medium text-primary hover:text-primary/80">
-            entrar na sua conta existente
+        <div className="flex items-center mt-4 justify-center text-center gap-2">
+          <p className="text-sm text-gray-600">
+            Já possui uma conta?
+          </p>
+          <Link href="/auth/login" className="inline-flex items-center px-2 py-1 btn-secondary transition-colors font-medium">
+            Fazer Login
           </Link>
-        </p>
+        </div>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
