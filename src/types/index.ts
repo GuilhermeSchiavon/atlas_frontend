@@ -14,6 +14,7 @@ export interface Chapter {
   description?: string;
   slug: string;
   status: 'ativo' | 'inativo';
+  publicationCount?: number;
 }
 
 export interface Image {

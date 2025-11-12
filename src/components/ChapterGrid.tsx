@@ -15,18 +15,26 @@ export default function ChapterGrid({ chapters }: ChapterGridProps) {
           className="card p-6 hover:shadow-md transition-shadow"
         >
           <div className="flex items-start space-x-4">
-            <div className="bg-primary text-white w-12 h-12 flex items-center justify-center font-bold text-lg">
+            <div className={`text-white w-12 h-12 flex items-center justify-center font-bold text-lg ${
+                  (chapter.publicationCount || 0) > 0 
+                    ? 'bg-primary' 
+                    : 'bg-gray-200'
+                }`}>
               {chapter.number}
             </div>
             <div className="flex-1">
               <h3 className="font-semibold text-lg text-text mb-2 line-clamp-2">
                 {chapter.title}
               </h3>
-              {chapter.description && (
-                <p className="text-gray-600 text-sm line-clamp-3">
-                  {chapter.description}
-                </p>
-              )}
+              <div className="flex items-center text-sm text-gray-500">
+                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  (chapter.publicationCount || 0) > 0 
+                    ? 'bg-green-100 text-green-800' 
+                    : 'bg-gray-100 text-gray-600'
+                }`}>
+                  {chapter.publicationCount || 0} publicações
+                </span>
+              </div>
             </div>
           </div>
         </Link>

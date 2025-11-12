@@ -34,7 +34,7 @@ export default function HomePage() {
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
               Atlas de Dermatologia do 
-              <span className='text-secondary'> Genital Masculino</span>
+              <span className='text-secondary whitespace-nowrap'> Genital Masculino</span>
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-gray-200">
               Referência científica em dermatologia genital masculina para profissionais da saúde
