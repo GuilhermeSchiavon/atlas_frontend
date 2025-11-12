@@ -1,25 +1,38 @@
 import useSWR from 'swr';
 import { api } from '@/services/api';
-import { Chapter, Publication } from '@/types';
+import { Category, Publication } from '@/types';
 
-export function useChapters() {
-  const { data, error, isLoading } = useSWR('/chapters', () => api.getChapters());
+export function useCategories() {
+  const { data, error, isLoading } = useSWR('/atlas-categories', () => api.getCategories());
   
   return {
-    chapters: data?.chapters || [],
+    categories: data?.categories || [],
     isLoading,
     error
   };
 }
 
-export function useChapter(id: string) {
+export function useFeaturedCategories(limit?: number) {
   const { data, error, isLoading } = useSWR(
-    id ? `/chapters/${id}` : null,
-    () => api.getChapter(id)
+    `/atlas-categories/featured${limit ? `?limit=${limit}` : ''}`,
+    () => api.getFeaturedCategories(limit)
   );
   
   return {
-    chapter: data?.chapter,
+    categories: data?.categories || [],
+    isLoading,
+    error
+  };
+}
+
+export function useCategory(id: string) {
+  const { data, error, isLoading } = useSWR(
+    id ? `/atlas-categories/${id}` : null,
+    () => api.getCategory(id)
+  );
+  
+  return {
+    category: data?.category,
     isLoading,
     error
   };
@@ -30,7 +43,7 @@ export function usePublications(params?: {
   pageNumber?: number;
   pageSize?: number;
   status?: string;
-  chapter_id?: number;
+  category_ids?: number[];
 }) {
   const { data, error, isLoading } = useSWR(
     ['/publications', params],

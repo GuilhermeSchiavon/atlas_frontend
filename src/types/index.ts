@@ -7,9 +7,8 @@ export interface User {
   status: 'ativo' | 'inativo' | 'pendente' | 'banida';
 }
 
-export interface Chapter {
+export interface Category {
   id: number;
-  number: number;
   title: string;
   description?: string;
   slug: string;
@@ -35,14 +34,13 @@ export interface Publication {
   body_location: 'glande' | 'escroto' | 'prepucio' | 'corpo_peniano' | 'regiao_inguinal' | 'perianal' | 'outro';
   patient_age?: number;
   patient_skin_color?: 'clara' | 'morena' | 'negra' | 'amarela' | 'indigena';
-  chapter_id: number;
   user_id: number;
   status: 'pending' | 'approved' | 'rejected';
   approved_by?: number;
   rejection_reason?: string;
   createdAt: string;
   updatedAt: string;
-  Chapter?: Chapter;
+  Categories?: Category[];
   Author?: User;
   Images?: Image[];
 }

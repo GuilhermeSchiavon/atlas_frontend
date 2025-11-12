@@ -3,24 +3,18 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import SearchBar from '@/components/SearchBar';
-import ChapterGrid from '@/components/ChapterGrid';
+import CategoryGrid from '@/components/CategoryGrid';
 import PublicationCard from '@/components/PublicationCard';
 import { usePublications } from '@/hooks/useApi';
 import { getUser } from '@/utils/auth';
 import { User } from '@/types';
-
-// Mock data - replace with API calls
-const mockChapters = [
-  { id: 1, number: 1, title: "Exame físico do genital masculino", slug: "exame-fisico-do-genital-masculino", status: 'ativo' as const },
-  { id: 2, number: 2, title: "Propedêutica dermatológica e urológica", slug: "propedeutica-dermatologica-e-urologica", status: 'ativo' as const },
-  { id: 3, number: 3, title: "Biópsia cutânea do genital masculino", slug: "biopsia-cutanea-do-genital-masculino", status: 'ativo' as const },
-];
-
+import { useFeaturedCategories } from '@/hooks/useApi';
 
 
 export default function HomePage() {
   const [user, setUser] = useState<User | null>(null);
   const { publications, isLoading, error } = usePublications({ status: 'approved' });
+  const { categories, isLoading: isLoadingCategories, error: errorCategories } = useFeaturedCategories(6);
 
   useEffect(() => {
     setUser(getUser());
@@ -40,8 +34,8 @@ export default function HomePage() {
               Referência científica em dermatologia genital masculina para profissionais da saúde
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/capitulos" className="btn-secondary text-lg px-8 py-3">
-                Explorar Capítulos
+              <Link href="/categorias" className="btn-secondary text-lg px-8 py-3">
+                Explorar Temas
               </Link>
               <Link href={user ? "/submit" : "/auth/register"} className="border border-white text-white px-8 py-3 hover:bg-white hover:text-primary transition-colors">
                 Contribuir
@@ -66,21 +60,31 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Featured Chapters */}
+      {/* Featured Categories */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-text mb-4">
-              Capítulos em Destaque
+              Temas em Destaque
             </h2>
             <p className="text-gray-600">
               Explore os principais tópicos do atlas
             </p>
           </div>
-          <ChapterGrid chapters={mockChapters} />
+          {isLoadingCategories ? (
+            <div className="flex justify-center py-8">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            </div>
+          ) : errorCategories ? (
+            <div className="text-center py-8 text-red-500">
+              Erro ao carregar os temas
+            </div>
+          ) : (
+            <CategoryGrid categories={categories} />
+          )}
           <div className="text-center mt-8">
-            <Link href="/capitulos" className="btn-primary text-lg px-8 py-3">
-              Ver Todos os Capítulos
+            <Link href="/categorias" className="btn-primary text-lg px-8 py-3">
+              Ver Todos os Temas
             </Link>
           </div>
         </div>

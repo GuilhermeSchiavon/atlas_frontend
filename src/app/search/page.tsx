@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import PublicationCard from '@/components/PublicationCard';
-import ChapterGrid from '@/components/ChapterGrid';
-import { usePublications, useChapters } from '@/hooks/useApi';
+import CategoryGrid from '@/components/CategoryGrid';
+import { usePublications, useCategories } from '@/hooks/useApi';
 
 const BODY_LOCATIONS = [
   { value: '', label: 'Todas as localizações' },
@@ -22,17 +22,17 @@ const SORT_OPTIONS = [
   { value: 'newest', label: 'Mais recentes' },
   { value: 'oldest', label: 'Mais antigas' },
   { value: 'title', label: 'Título A-Z' },
-  { value: 'chapter', label: 'Por capítulo' },
+  { value: 'category', label: 'Por categoria' },
 ];
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get('q') || '';
   
-  const [searchType, setSearchType] = useState<'publications' | 'chapters'>('publications');
+  const [searchType, setSearchType] = useState<'publications' | 'categories'>('publications');
   const [filters, setFilters] = useState({
     keyword: initialQuery,
-    chapter_id: '',
+    category_ids: [] as string[],
     body_location: '',
     sort: 'newest',
     showFilters: false
@@ -40,14 +40,14 @@ export default function SearchPage() {
 
   const { publications, isLoading: pubLoading, error: pubError } = usePublications({
     keyword: filters.keyword,
-    chapter_id: filters.chapter_id ? parseInt(filters.chapter_id) : undefined
+    category_ids: filters.category_ids.length > 0 ? filters.category_ids.map(id => parseInt(id)) : []
   });
 
-  const { chapters, isLoading: chapLoading, error: chapError } = useChapters();
+  const { categories, isLoading: catLoading, error: catError } = useCategories();
 
-  const filteredChapters = chapters.filter(chapter =>
-    chapter.title.toLowerCase().includes(filters.keyword.toLowerCase()) ||
-    chapter.description?.toLowerCase().includes(filters.keyword.toLowerCase())
+  const filteredCategories = categories.filter(category =>
+    category.title.toLowerCase().includes(filters.keyword.toLowerCase()) ||
+    category.description?.toLowerCase().includes(filters.keyword.toLowerCase())
   );
 
   const filteredPublications = publications
@@ -58,8 +58,8 @@ export default function SearchPage() {
           return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
         case 'title':
           return a.title.localeCompare(b.title);
-        case 'chapter':
-          return (a.Chapter?.number || 0) - (b.Chapter?.number || 0);
+        case 'category':
+          return (a.Categories?.[0]?.id || 0) - (b.Categories?.[0]?.id || 0);
         default:
           return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       }
@@ -73,16 +73,16 @@ export default function SearchPage() {
   const clearFilters = () => {
     setFilters({
       keyword: '',
-      chapter_id: '',
+      category_ids: [],
       body_location: '',
       sort: 'newest',
       showFilters: filters.showFilters
     });
   };
 
-  const isLoading = searchType === 'publications' ? pubLoading : chapLoading;
-  const error = searchType === 'publications' ? pubError : chapError;
-  const results = searchType === 'publications' ? filteredPublications : filteredChapters;
+  const isLoading = searchType === 'publications' ? pubLoading : catLoading;
+  const error = searchType === 'publications' ? pubError : catError;
+  const results = searchType === 'publications' ? filteredPublications : filteredCategories;
 
   return (
     <div className="min-h-screen bg-background py-8">
@@ -93,7 +93,7 @@ export default function SearchPage() {
             Pesquisar no Atlas
           </h1>
           <p className="text-gray-600">
-            {initialQuery ? `Resultados para "${initialQuery}"` : 'Encontre capítulos e publicações'}
+            {initialQuery ? `Resultados para "${initialQuery}"` : 'Encontre temas e publicações'}
           </p>
         </div>
 
@@ -135,20 +135,30 @@ export default function SearchPage() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Capítulo
+                      Temas
                     </label>
-                    <select
-                      value={filters.chapter_id}
-                      onChange={(e) => setFilters(prev => ({ ...prev, chapter_id: e.target.value }))}
-                      className="w-full px-3 py-2 border border-gray-300 focus:ring-primary focus:border-primary"
-                    >
-                      <option value="">Todos os capítulos</option>
-                      {chapters.map(chapter => (
-                        <option key={chapter.id} value={chapter.id}>
-                          {chapter.number}. {chapter.title}
-                        </option>
+                    <div className="max-h-32 overflow-y-auto border border-gray-300 p-2">
+                      {categories.map(category => (
+                        <label key={category.id} className="flex items-center space-x-2 py-1">
+                          <input
+                            type="checkbox"
+                            value={category.id}
+                            checked={filters.category_ids.includes(category.id.toString())}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              setFilters(prev => ({
+                                ...prev,
+                                category_ids: e.target.checked 
+                                  ? [...prev.category_ids, value]
+                                  : prev.category_ids.filter(id => id !== value)
+                              }));
+                            }}
+                            className="text-primary focus:ring-primary"
+                          />
+                          <span className="text-sm">{category.id}. {category.title}</span>
+                        </label>
                       ))}
-                    </select>
+                    </div>
                   </div>
 
                   <div>
@@ -216,14 +226,14 @@ export default function SearchPage() {
             Publicações ({filteredPublications.length})
           </button>
           <button
-            onClick={() => setSearchType('chapters')}
+            onClick={() => setSearchType('categories')}
             className={`px-6 py-3 font-medium ${
-              searchType === 'chapters'
+              searchType === 'categories'
                 ? 'bg-primary text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
-            Capítulos ({filteredChapters.length})
+            Temas ({filteredCategories.length})
           </button>
         </div>
 
@@ -272,7 +282,7 @@ export default function SearchPage() {
                   ))}
                 </div>
               ) : (
-                <ChapterGrid chapters={filteredChapters} />
+                <CategoryGrid categories={filteredCategories} />
               )}
             </div>
           )}

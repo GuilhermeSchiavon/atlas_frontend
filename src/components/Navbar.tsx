@@ -33,8 +33,8 @@ export default function Navbar() {
             <Link href="/" className="hover:text-secondary transition-colors">
               Início
             </Link>
-            <Link href="/capitulos" className="hover:text-secondary transition-colors">
-              Capítulos
+            <Link href="/categorias" className="hover:text-secondary transition-colors">
+              Temas
             </Link>
             {user ? (
               <>
@@ -81,8 +81,8 @@ export default function Navbar() {
               <Link href="/" className="block px-3 py-2 hover:text-secondary">
                 Início
               </Link>
-              <Link href="/capitulos" className="block px-3 py-2 hover:text-secondary">
-                Capítulos
+              <Link href="/categorias" className="block px-3 py-2 hover:text-secondary">
+                Temas
               </Link>
               {user ? (
                 <>

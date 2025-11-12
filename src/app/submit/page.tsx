@@ -24,11 +24,11 @@ const SKIN_COLORS = [
   { value: 'indigena', label: 'Indígena' },
 ];
 
-// Mock chapters
-const mockChapters = Array.from({ length: 58 }, (_, i) => ({
+// Mock categories
+const mockCategories = Array.from({ length: 58 }, (_, i) => ({
   id: i + 1,
   number: i + 1,
-  title: `Capítulo ${i + 1}`,
+  title: `Categoria ${i + 1}`,
 }));
 
 export default function SubmitPage() {
@@ -42,7 +42,7 @@ export default function SubmitPage() {
     body_location: '',
     patient_age: '',
     patient_skin_color: '',
-    chapter_id: '',
+    category_ids: [],
   });
   const [images, setImages] = useState<File[]>([]);
   const router = useRouter();
@@ -71,7 +71,9 @@ export default function SubmitPage() {
       formDataToSend.append('body_location', formData.body_location);
       formDataToSend.append('patient_age', formData.patient_age);
       formDataToSend.append('patient_skin_color', formData.patient_skin_color);
-      formDataToSend.append('chapter_id', formData.chapter_id);
+      formData.category_ids.forEach(id => {
+        formDataToSend.append('category_ids', id);
+      });
       
       images.forEach((image, index) => {
         formDataToSend.append('images', image);
@@ -160,24 +162,34 @@ export default function SubmitPage() {
               </div>
 
               <div>
-                <label htmlFor="chapter_id" className="block text-sm font-medium text-gray-700">
-                  Capítulo *
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Temas *
                 </label>
-                <select
-                  id="chapter_id"
-                  name="chapter_id"
-                  required
-                  value={formData.chapter_id}
-                  onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 focus:ring-primary focus:border-primary"
-                >
-                  <option value="">Selecione um capítulo</option>
-                  {mockChapters.map((chapter) => (
-                    <option key={chapter.id} value={chapter.id}>
-                      {chapter.number}. {chapter.title}
-                    </option>
+                <div className="max-h-40 overflow-y-auto border border-gray-300 p-2">
+                  {mockCategories.map((category) => (
+                    <label key={category.id} className="flex items-center space-x-2 py-1">
+                      <input
+                        type="checkbox"
+                        value={category.id}
+                        checked={formData.category_ids.includes(category.id.toString())}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          setFormData(prev => ({
+                            ...prev,
+                            category_ids: e.target.checked 
+                              ? [...prev.category_ids, value]
+                              : prev.category_ids.filter(id => id !== value)
+                          }));
+                        }}
+                        className="text-primary focus:ring-primary"
+                      />
+                      <span className="text-sm">{category.id}. {category.title}</span>
+                    </label>
                   ))}
-                </select>
+                </div>
+                <p className="text-sm text-gray-500 mt-1">
+                  Selecione uma ou mais temas relacionadas
+                </p>
               </div>
             </div>
 

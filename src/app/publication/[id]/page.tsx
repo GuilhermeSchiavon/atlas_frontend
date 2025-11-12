@@ -67,10 +67,6 @@ export default function PublicationPage({ params }: PublicationPageProps) {
           <ol className="flex items-center space-x-2 text-sm text-gray-500">
             <li><Link href="/" className="hover:text-primary">Início</Link></li>
             <li>/</li>
-            <li><Link href={`/capitulo/${publication.Chapter?.slug || publication.Chapter?.id}`} className="hover:text-primary">
-              Cap. {publication.Chapter?.number}
-            </Link></li>
-            <li>/</li>
             <li className="text-gray-900">{publication.title}</li>
           </ol>
         </nav>
@@ -108,20 +104,22 @@ export default function PublicationPage({ params }: PublicationPageProps) {
 
           {/* Publication Details */}
           <div className="space-y-6">
-            {/* Chapter Info */}
+            {/* Categories Info */}
             <div className="bg-white shadow-sm p-6">
-              <h3 className="font-semibold text-lg mb-4">Capítulo</h3>
-              <Link 
-                href={`/capitulo/${publication.Chapter?.slug || publication.Chapter?.id}`}
-                className="flex items-center space-x-3 p-3 border hover:bg-gray-50 transition-colors"
-              >
-                <div className="bg-primary text-white w-10 h-10 flex items-center justify-center font-bold">
-                  {publication.Chapter?.number}
-                </div>
-                <div>
-                  <p className="font-medium">{publication.Chapter?.title}</p>
-                </div>
-              </Link>
+              <h3 className="font-semibold text-lg mb-4">Temas</h3>
+              {(publication.Categories ?? []).map((category) => (
+                <Link 
+                  href={`/capitulo/${category?.slug || category?.id}`}
+                  className="flex items-center space-x-3 p-3 mb-1 border hover:bg-gray-50 transition-colors"
+                >
+                  <div className="bg-primary text-white min-w-10 h-10 flex items-center justify-center font-bold">
+                    {category?.id}
+                  </div>
+                  <div>
+                    <p className="font-medium">{category?.title}</p>
+                  </div>
+                </Link>
+              ))}
             </div>
 
             {/* Clinical Data */}
@@ -199,13 +197,13 @@ export default function PublicationPage({ params }: PublicationPageProps) {
         {/* Navigation */}
         <div className="mt-8 flex justify-between items-center">
           <Link 
-            href={`/capitulo/${publication.Chapter?.slug || publication.Chapter?.id}`}
+            href={`/categorias`}
             className="flex items-center text-primary hover:text-primary/80"
           >
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            Voltar ao capítulo
+            Voltar aos temas
           </Link>
           
           <div className="flex space-x-4">

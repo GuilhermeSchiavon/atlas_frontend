@@ -30,9 +30,22 @@ export default function PublicationCard({ publication }: PublicationCardProps) {
       
       <div className="p-4">
         <div className="flex items-center justify-between mb-2">
-          <Link href={`/capitulo/${publication.Chapter?.slug || publication.Chapter?.id}`} className="text-xs bg-primary text-white px-2 py-1 hover:bg-primary/90">
-            Cap. {publication.Chapter?.number}
-          </Link>
+          <div className="flex flex-wrap gap-1">
+            {publication.Categories?.slice(0, 2).map((category) => (
+              <Link 
+                key={category.id}
+                href={`/categoria/${category.slug || category.id}`} 
+                className="text-xs bg-primary/70 text-white px-2 py-1 hover:bg-primary/90"
+              >
+                {category.title}
+              </Link>
+            ))}
+            {publication.Categories && publication.Categories.length > 2 && (
+              <span className="text-xs bg-gray-500 text-white px-2 py-1">
+                +{publication.Categories.length - 2}
+              </span>
+            )}
+          </div>
           <span className={`text-xs px-2 py-1 ${
             publication.status === 'approved' ? 'bg-green-100 text-green-800' :
             publication.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :

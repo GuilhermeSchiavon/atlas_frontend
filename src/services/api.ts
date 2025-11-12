@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie';
-import { AuthResponse, User, Chapter, Publication } from '@/types';
+import { AuthResponse, User, Category, Publication } from '@/types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1000';
 
@@ -60,18 +60,28 @@ class ApiService {
     return this.request<{ user: User }>('/api/v2/users/profile');
   }
 
-  // Chapters
-  async getChapters(): Promise<{ chapters: Chapter[] }> {
+  // Categories
+  async getCategories(): Promise<{ categories: Category[] }> {
     try {
-      return await this.request<{ chapters: Chapter[] }>('/api/v2/chapters');
+      return await this.request<{ categories: Category[] }>('/api/v2/atlas-categories');
     } catch (error) {
-      console.error('Error fetching chapters:', error);
+      console.error('Error fetching categories:', error);
       throw error;
     }
   }
 
-  async getChapter(idOrSlug: string): Promise<{ chapter: Chapter }> {
-    return this.request<{ chapter: Chapter }>(`/api/v2/chapters/${idOrSlug}`);
+  async getCategory(idOrSlug: string): Promise<{ category: Category }> {
+    return this.request<{ category: Category }>(`/api/v2/atlas-categories/${idOrSlug}`);
+  }
+
+  async getFeaturedCategories(limit?: number): Promise<{ categories: Category[] }> {
+    const query = limit ? `?limit=${limit}` : '';
+    try {
+      return await this.request<{ categories: Category[] }>(`/api/v2/atlas-categories/featured${query}`);
+    } catch (error) {
+      console.error('Error fetching featured categories:', error);
+      throw error;
+    }
   }
 
   // Publications
@@ -80,7 +90,7 @@ class ApiService {
     pageNumber?: number;
     pageSize?: number;
     status?: string;
-    chapter_id?: number;
+    category_ids?: number[];
   }): Promise<{ publications: Publication[]; total: number; pages: number }> {
     const query = params ? `?${new URLSearchParams(params as any).toString()}` : '';
     try {
