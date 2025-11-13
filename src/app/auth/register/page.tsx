@@ -3,13 +3,17 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { validateCPF, validateUF, formatCPF, validatePassword } from '@/utils/validation';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
+    cpf: '',
     crm: '',
+    uf: '',
+    especialidade: '',
     password: '',
     confirmPassword: '',
     acceptTerms: false,
@@ -36,6 +40,37 @@ export default function RegisterPage() {
       return;
     }
 
+    if (!validateCPF(formData.cpf)) {
+      setError('CPF inválido');
+      setIsLoading(false);
+      return;
+    }
+
+    if (!validateUF(formData.uf)) {
+      setError('UF inválida');
+      setIsLoading(false);
+      return;
+    }
+
+    if (!formData.crm.trim()) {
+      setError('CRM é obrigatório');
+      setIsLoading(false);
+      return;
+    }
+
+    if (!formData.especialidade) {
+      setError('Especialidade é obrigatória');
+      setIsLoading(false);
+      return;
+    }
+
+    const passwordValidation = validatePassword(formData.password);
+    if (!passwordValidation.isValid) {
+      setError(passwordValidation.message);
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const { api } = await import('@/services/api');
       await api.register({
@@ -43,7 +78,10 @@ export default function RegisterPage() {
         lastName: formData.lastName,
         email: formData.email,
         password: formData.password,
-        crm: formData.crm
+        cpf: formData.cpf.replace(/\D/g, ''),
+        crm: formData.crm,
+        uf: formData.uf,
+        especialidade: formData.especialidade
       });
       
       setSuccess(true);
@@ -58,11 +96,21 @@ export default function RegisterPage() {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
+    
+    let processedValue = value;
+    if (name === 'cpf') {
+      const cleanValue = value.replace(/\D/g, '').slice(0, 11);
+      processedValue = formatCPF(cleanValue);
+    } else if (name === 'uf') {
+      processedValue = value.toUpperCase().slice(0, 2);
+    }
+    
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox' ? checked : processedValue
     }));
   };
 
@@ -163,19 +211,73 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label htmlFor="crm" className="block text-sm font-medium text-gray-700">
-                CRM
+              <label htmlFor="cpf" className="block text-sm font-medium text-gray-700">
+                CPF
               </label>
               <input
-                id="crm"
-                name="crm"
+                id="cpf"
+                name="cpf"
                 type="text"
                 required
-                value={formData.crm}
+                value={formData.cpf}
                 onChange={handleChange}
-                placeholder="Ex: 12345/SP"
+                placeholder="123.456.789-01"
+                maxLength={14}
                 className="mt-1 appearance-none block w-full px-3 py-2 border border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary"
               />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="crm" className="block text-sm font-medium text-gray-700">
+                  CRM
+                </label>
+                <input
+                  id="crm"
+                  name="crm"
+                  type="text"
+                  required
+                  value={formData.crm}
+                  onChange={handleChange}
+                  placeholder="12345"
+                  className="mt-1 appearance-none block w-full px-3 py-2 border border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="uf" className="block text-sm font-medium text-gray-700">
+                  UF
+                </label>
+                <input
+                  id="uf"
+                  name="uf"
+                  type="text"
+                  required
+                  value={formData.uf}
+                  onChange={handleChange}
+                  placeholder="SP"
+                  maxLength={2}
+                  className="mt-1 appearance-none block w-full px-3 py-2 border border-gray-300 placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="especialidade" className="block text-sm font-medium text-gray-700">
+                Especialidade
+              </label>
+              <select
+                id="especialidade"
+                name="especialidade"
+                required
+                value={formData.especialidade}
+                onChange={handleChange}
+                className="mt-1 appearance-none block w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-primary focus:border-primary"
+              >
+                <option value="">Selecione uma especialidade</option>
+                <option value="Urologista">Urologista</option>
+                <option value="Dermatologista">Dermatologista</option>
+              </select>
             </div>
 
             <div>

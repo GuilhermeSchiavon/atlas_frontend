@@ -48,7 +48,10 @@ class ApiService {
     lastName: string;
     email: string;
     password: string;
-    crm?: string;
+    cpf: string;
+    crm: string;
+    uf: string;
+    especialidade: string;
   }): Promise<AuthResponse> {
     return this.request<AuthResponse>('/api/v2/users/register', {
       method: 'POST',

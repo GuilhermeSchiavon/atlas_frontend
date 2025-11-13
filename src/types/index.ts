@@ -3,6 +3,10 @@ export interface User {
   firstName: string;
   lastName: string;
   email: string;
+  cpf?: string;
+  crm: string;
+  uf: string;
+  especialidade: 'Urologista' | 'Dermatologista';
   accounType: 'adm' | 'associado';
   status: 'ativo' | 'inativo' | 'pendente' | 'banida';
 }
