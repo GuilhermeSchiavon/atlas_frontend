@@ -3,7 +3,7 @@ import { api } from '@/services/api';
 import { Category, Publication } from '@/types';
 
 export function useCategories() {
-  const { data, error, isLoading } = useSWR('/atlas-categories', () => api.getCategories());
+  const { data, error, isLoading } = useSWR('/categories', () => api.getCategories());
   
   return {
     categories: data?.categories || [],
@@ -14,7 +14,7 @@ export function useCategories() {
 
 export function useFeaturedCategories(limit?: number) {
   const { data, error, isLoading } = useSWR(
-    `/atlas-categories/featured${limit ? `?limit=${limit}` : ''}`,
+    `/categories/featured${limit ? `?limit=${limit}` : ''}`,
     () => api.getFeaturedCategories(limit)
   );
   
@@ -27,7 +27,7 @@ export function useFeaturedCategories(limit?: number) {
 
 export function useCategory(id: string) {
   const { data, error, isLoading } = useSWR(
-    id ? `/atlas-categories/${id}` : null,
+    id ? `/categories/${id}` : null,
     () => api.getCategory(id)
   );
   

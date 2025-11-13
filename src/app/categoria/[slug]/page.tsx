@@ -98,7 +98,7 @@ export default function CategoriaPage({ params }: CategoriaPageProps) {
                 Esta categoria ainda não possui publicações aprovadas.
               </p>
               <a href="/submit" className="btn-primary">
-                Contribuir com uma publicação
+              Contribuir com Imagens
               </a>
             </div>
           )}

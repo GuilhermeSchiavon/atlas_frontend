@@ -63,7 +63,7 @@ class ApiService {
   // Categories
   async getCategories(): Promise<{ categories: Category[] }> {
     try {
-      return await this.request<{ categories: Category[] }>('/api/v2/atlas-categories');
+      return await this.request<{ categories: Category[] }>('/api/v2/categories');
     } catch (error) {
       console.error('Error fetching categories:', error);
       throw error;
@@ -71,13 +71,13 @@ class ApiService {
   }
 
   async getCategory(idOrSlug: string): Promise<{ category: Category }> {
-    return this.request<{ category: Category }>(`/api/v2/atlas-categories/${idOrSlug}`);
+    return this.request<{ category: Category }>(`/api/v2/categories/${idOrSlug}`);
   }
 
   async getFeaturedCategories(limit?: number): Promise<{ categories: Category[] }> {
     const query = limit ? `?limit=${limit}` : '';
     try {
-      return await this.request<{ categories: Category[] }>(`/api/v2/atlas-categories/featured${query}`);
+      return await this.request<{ categories: Category[] }>(`/api/v2/categories/featured${query}`);
     } catch (error) {
       console.error('Error fetching featured categories:', error);
       throw error;

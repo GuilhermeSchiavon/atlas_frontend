@@ -38,7 +38,7 @@ export default function HomePage() {
                 Explorar Temas
               </Link>
               <Link href={user ? "/submit" : "/auth/register"} className="border border-white text-white px-8 py-3 hover:bg-white hover:text-primary transition-colors">
-                Contribuir
+              Contribuir com Imagens
               </Link>
             </div>
           </div>
