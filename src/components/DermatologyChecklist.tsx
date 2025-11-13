@@ -383,10 +383,103 @@ export default function DermatologyChecklist({ data, onChange }: DermatologyChec
                 )}
               </div>
             </div>
+            {/* Linfadenopatia */}
+            <div className="mb-6">
+              <h5 className="font-medium text-gray-700 mb-2">B. Linfadenopatia:</h5>
+              <div className="space-y-3">
+                <div className="flex space-x-4">
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      name="linfadenopatia"
+                      value="sim"
+                      checked={data.linfadenopatia === 'sim'}
+                      onChange={(e) => handleChange('linfadenopatia', e.target.value)}
+                      className="mr-2"
+                    />
+                    <span className="text-sm">Sim, há linfonodos palpáveis/aumentados</span>
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      name="linfadenopatia"
+                      value="nao"
+                      checked={data.linfadenopatia === 'nao'}
+                      onChange={(e) => handleChange('linfadenopatia', e.target.value)}
+                      className="mr-2"
+                    />
+                    <span className="text-sm">Não há biópsia</span>
+                  </label>
+                </div>
+
+                {data.linfadenopatia === 'sim' && (
+                  <div className="ml-4 space-y-3">
+                    <div>
+                      <span className="text-sm font-medium">Localização:</span>
+                      <div className="flex flex-wrap gap-4 mt-1">
+                        {['Cervical', 'Axilar', 'Inguinal', 'Generalizada'].map(tipo => (
+                          <label key={tipo} className="flex items-center">
+                            <input
+                              type="radio"
+                              name="local_linfadenopatia"
+                              value={tipo}
+                              checked={data.local_linfadenopatia === tipo}
+                              onChange={(e) => handleChange('local_linfadenopatia', e.target.value)}
+                              className="mr-2"
+                            />
+                            <span className="text-sm">{tipo}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium">Características:</span>
+                      <div className="flex flex-wrap gap-4 mt-1">
+                        {['Móvel/Elástico', 'Fixo/Endurecido', 'Doloroso'].map(tipo => (
+                          <label key={tipo} className="flex items-center">
+                            <input
+                              type="radio"
+                              name="caracter_linfadenopatia"
+                              value={tipo}
+                              checked={data.caracter_linfadenopatia === tipo}
+                              onChange={(e) => handleChange('caracter_linfadenopatia', e.target.value)}
+                              className="mr-2"
+                            />
+                            <span className="text-sm">{tipo}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+            {/* Sorologias */}
+            <div className="mb-6">
+              <h5 className="font-medium text-gray-700 mb-2">C. Sorologias:</h5>
+              <div className="space-y-3">
+                <div className="flex space-x-4">
+                  <div className="w-full ml-4 space-y-3">
+                    <div className='w-full'>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Liste as principais sorologias e seus resultados (se não for relevante para o caso, deixe em branco):
+                      </label>
+                      <textarea
+                        value={data.sorologias || ''}
+                        onChange={(e) => handleChange('sorologias', e.target.value)}
+                        rows={3}
+                        className="w-full px-3 py-2 border border-gray-300 rounded text-sm"
+                        placeholder="Principais sorologias e seus resultados"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             {/* Exames */}
             <div className="space-y-4">
-              <h5 className="font-medium text-gray-700">B. Exames Realizados:</h5>
+              <h4 className="font-medium text-gray-900 mb-4">7. Exames Realizados:</h4>
               
               {/* Microbiológicos */}
               <div>
@@ -442,7 +535,7 @@ export default function DermatologyChecklist({ data, onChange }: DermatologyChec
                       </tr>
                     </thead>
                     <tbody>
-                      {['Chlamydia trachomatis', 'Neisseria gonorrhoeae', 'Mycoplasma genitalium', 'Trichomonas vaginalis'].map(patogeno => (
+                      {['Chlamydia trachomatis', 'Neisseria gonorrhoeae', 'Mycoplasma genitalium', 'Trichomonas vaginalis', 'Outro Específico'].map(patogeno => (
                         <tr key={patogeno} className="border-b">
                           <td className="py-2">{patogeno}</td>
                           <td className="text-center py-2">
@@ -483,7 +576,7 @@ export default function DermatologyChecklist({ data, onChange }: DermatologyChec
                       </tr>
                     </thead>
                     <tbody>
-                      {['Sífilis (VDRL/RPR)', 'Sífilis (FTA-ABS/TPHA)', 'HIV (Anti-HIV 1/2)', 'Hepatite B/C', 'Herpes Simples (IgM/IgG)'].map(sorologia => (
+                      {['Sífilis (VDRL/RPR)', 'Sífilis (FTA-ABS/TPHA)', 'HIV (Anti-HIV 1/2)', 'Hepatite B/C', 'Herpes Simples (IgM/IgG)', 'Outro Específico'].map(sorologia => (
                         <tr key={sorologia} className="border-b">
                           <td className="py-2">{sorologia}</td>
                           <td className="text-center py-2">
