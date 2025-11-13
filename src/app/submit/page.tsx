@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { getUser } from '@/utils/auth';
 import { User } from '@/types';
 import ImageUpload from '@/components/ImageUpload';
+import CategorySelector from '@/components/CategorySelector';
+import DermatologyChecklist from '@/components/DermatologyChecklist';
 
 const BODY_LOCATIONS = [
   { value: 'glande', label: 'Glande' },
@@ -24,12 +26,10 @@ const SKIN_COLORS = [
   { value: 'indigena', label: 'Indígena' },
 ];
 
-// Mock categories
-const mockCategories = Array.from({ length: 58 }, (_, i) => ({
-  id: i + 1,
-  number: i + 1,
-  title: `Categoria ${i + 1}`,
-}));
+interface ImageWithDescription {
+  file: File;
+  description: string;
+}
 
 export default function SubmitPage() {
   const [user, setUser] = useState<User | null>(null);
@@ -44,7 +44,8 @@ export default function SubmitPage() {
     patient_skin_color: '',
     category_ids: [],
   });
-  const [images, setImages] = useState<File[]>([]);
+  const [images, setImages] = useState<ImageWithDescription[]>([]);
+  const [checklistData, setChecklistData] = useState({});
   const router = useRouter();
 
   useEffect(() => {
@@ -75,9 +76,13 @@ export default function SubmitPage() {
         formDataToSend.append('category_ids', id);
       });
       
-      images.forEach((image, index) => {
-        formDataToSend.append('images', image);
+      images.forEach((imageData, index) => {
+        formDataToSend.append('images', imageData.file);
+        formDataToSend.append(`image_descriptions`, imageData.description || '');
       });
+      
+      // Add checklist data
+      formDataToSend.append('checklist_data', JSON.stringify(checklistData));
 
       // Progress simulation
       const progressInterval = setInterval(() => {
@@ -165,28 +170,15 @@ export default function SubmitPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Temas *
                 </label>
-                <div className="max-h-40 overflow-y-auto border border-gray-300 p-2">
-                  {mockCategories.map((category) => (
-                    <label key={category.id} className="flex items-center space-x-2 py-1">
-                      <input
-                        type="checkbox"
-                        value={category.id}
-                        checked={formData.category_ids.includes(category.id.toString())}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          setFormData(prev => ({
-                            ...prev,
-                            category_ids: e.target.checked 
-                              ? [...prev.category_ids, value]
-                              : prev.category_ids.filter(id => id !== value)
-                          }));
-                        }}
-                        className="text-primary focus:ring-primary"
-                      />
-                      <span className="text-sm">{category.id}. {category.title}</span>
-                    </label>
-                  ))}
-                </div>
+                <CategorySelector
+                  selectedCategories={formData.category_ids}
+                  onCategoriesChange={(categories) => {
+                    setFormData(prev => ({
+                      ...prev,
+                      category_ids: categories
+                    }));
+                  }}
+                />
                 <p className="text-sm text-gray-500 mt-1">
                   Selecione uma ou mais temas relacionadas
                 </p>
@@ -288,6 +280,12 @@ export default function SubmitPage() {
                 </div>
               </div>
             </div>
+
+            {/* Dermatology Checklist */}
+            <DermatologyChecklist
+              data={checklistData}
+              onChange={setChecklistData}
+            />
 
             {/* Progress Bar */}
             {isLoading && (

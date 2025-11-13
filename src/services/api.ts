@@ -87,6 +87,13 @@ class ApiService {
     }
   }
 
+  async createCategory(title: string, description?: string): Promise<{ category: Category }> {
+    return this.request<{ category: Category }>('/api/v2/categories', {
+      method: 'POST',
+      body: JSON.stringify({ title, description }),
+    });
+  }
+
   // Publications
   async getPublications(params?: {
     keyword?: string;

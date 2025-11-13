@@ -28,6 +28,7 @@ export interface Image {
   format: string;
   size: number;
   order: number;
+  description?: string;
 }
 
 export interface Publication {
@@ -42,6 +43,7 @@ export interface Publication {
   status: 'pending' | 'approved' | 'rejected';
   approved_by?: number;
   rejection_reason?: string;
+  checklist_data?: any;
   createdAt: string;
   updatedAt: string;
   Categories?: Category[];

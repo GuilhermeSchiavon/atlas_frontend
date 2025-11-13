@@ -3,9 +3,14 @@
 import { useState, useRef } from 'react';
 import Image from 'next/image';
 
+interface ImageWithDescription {
+  file: File;
+  description: string;
+}
+
 interface ImageUploadProps {
-  images: File[];
-  setImages: (images: File[]) => void;
+  images: ImageWithDescription[];
+  setImages: (images: ImageWithDescription[]) => void;
   maxImages?: number;
 }
 
@@ -26,7 +31,12 @@ export default function ImageUpload({ images, setImages, maxImages = 10 }: Image
       return;
     }
 
-    setImages([...images, ...newFiles]);
+    const newImagesWithDescription = newFiles.map(file => ({
+      file,
+      description: ''
+    }));
+
+    setImages([...images, ...newImagesWithDescription]);
   };
 
   const handleDrag = (e: React.DragEvent) => {
@@ -58,6 +68,12 @@ export default function ImageUpload({ images, setImages, maxImages = 10 }: Image
 
   const removeImage = (index: number) => {
     const newImages = images.filter((_, i) => i !== index);
+    setImages(newImages);
+  };
+
+  const updateImageDescription = (index: number, description: string) => {
+    const newImages = [...images];
+    newImages[index].description = description;
     setImages(newImages);
   };
 
@@ -104,27 +120,45 @@ export default function ImageUpload({ images, setImages, maxImages = 10 }: Image
 
       {/* Image Previews */}
       {images.length > 0 && (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {images.map((file, index) => (
-            <div key={index} className="relative group">
-              <div className="aspect-square bg-gray-100 overflow-hidden">
-                <Image
-                  src={URL.createObjectURL(file)}
-                  alt={`Preview ${index + 1}`}
-                  width={200}
-                  height={200}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <button
-                type="button"
-                onClick={() => removeImage(index)}
-                className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                ×
-              </button>
-              <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1 truncate">
-                {file.name}
+        <div className="space-y-4">
+          {images.map((imageData, index) => (
+            <div key={index} className="border border-gray-200 rounded-lg p-4">
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="relative group w-full md:w-48">
+                  <div className="aspect-square bg-gray-100 overflow-hidden rounded">
+                    <Image
+                      src={URL.createObjectURL(imageData.file)}
+                      alt={`Preview ${index + 1}`}
+                      width={200}
+                      height={200}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => removeImage(index)}
+                    className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    ×
+                  </button>
+                </div>
+                <div className="flex-1 space-y-2">
+                  <div className="text-sm font-medium text-gray-700">
+                    {imageData.file.name}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Descrição (opcional)
+                    </label>
+                    <textarea
+                      value={imageData.description}
+                      onChange={(e) => updateImageDescription(index, e.target.value)}
+                      placeholder="Descreva esta imagem..."
+                      rows={3}
+                      className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-primary focus:border-primary text-sm"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           ))}
