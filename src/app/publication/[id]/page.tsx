@@ -4,13 +4,28 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePublication } from '@/hooks/useApi';
+import { useAuth } from '@/hooks/useAuth';
 
 interface PublicationPageProps {
   params: { id: string };
 }
 
 export default function PublicationPage({ params }: PublicationPageProps) {
+  const { isLoading: authLoading } = useAuth(true); // Requer autenticação
   const { publication, isLoading, error } = usePublication(params.id);
+
+  // Mostrar loading enquanto verifica autenticação
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background py-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-center py-12">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (error) {
     return (

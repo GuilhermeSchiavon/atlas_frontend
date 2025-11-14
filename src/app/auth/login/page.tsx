@@ -26,7 +26,14 @@ export default function LoginPage() {
       setAuthToken(response.token);
       setUser(response.user);
       
-      window.location.href = '/';
+      // Verificar se há uma URL para redirecionamento
+      const redirectUrl = localStorage.getItem('redirectAfterLogin');
+      if (redirectUrl) {
+        localStorage.removeItem('redirectAfterLogin');
+        window.location.href = redirectUrl;
+      } else {
+        window.location.href = '/';
+      }
     } catch (err: any) {
       setError(err.message || 'Email ou senha inválidos');
     } finally {

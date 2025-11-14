@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { getAuthToken } from '@/utils/auth';
 import { Publication } from '@/types';
 
 interface PublicationCardProps {
@@ -7,10 +9,23 @@ interface PublicationCardProps {
 }
 
 export default function PublicationCard({ publication }: PublicationCardProps) {
-  // const firstImage = publication.Images?.[0];
+  const router = useRouter();
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const token = getAuthToken();
+    
+    if (!token) {
+      // Salvar a URL da publicação para redirecionamento após login
+      localStorage.setItem('redirectAfterLogin', `/publication/${publication.id}`);
+      router.push('/auth/login');
+    } else {
+      router.push(`/publication/${publication.id}`);
+    }
+  };
 
   return (
-    <Link href={`/publication/${publication.id}`} className="card overflow-hidden hover:shadow-md transition-shadow">
+    <div onClick={handleClick} className="card overflow-hidden hover:shadow-md transition-shadow cursor-pointer">
       {/* <div className="aspect-video bg-gray-200 relative">
         {firstImage ? (
           <Image
@@ -32,13 +47,16 @@ export default function PublicationCard({ publication }: PublicationCardProps) {
         <div className="flex items-center justify-between mb-2">
           <div className="flex flex-wrap gap-1">
             {publication.Categories?.slice(0, 2).map((category) => (
-              <Link 
+              <span 
                 key={category.id}
-                href={`/categoria/${category.slug || category.id}`} 
-                className="text-xs bg-primary/70 text-white px-2 py-1 hover:bg-primary/90"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push(`/categoria/${category.slug || category.id}`);
+                }}
+                className="text-xs bg-primary/70 text-white px-2 py-1 hover:bg-primary/90 cursor-pointer"
               >
                 {category.title}
-              </Link>
+              </span>
             ))}
             {publication.Categories && publication.Categories.length > 2 && (
               <span className="text-xs bg-gray-500 text-white px-2 py-1">
@@ -72,6 +90,6 @@ export default function PublicationCard({ publication }: PublicationCardProps) {
           {new Date(publication.createdAt).toLocaleDateString('pt-BR')}
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
