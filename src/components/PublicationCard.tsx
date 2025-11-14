@@ -7,11 +7,11 @@ interface PublicationCardProps {
 }
 
 export default function PublicationCard({ publication }: PublicationCardProps) {
-  const firstImage = publication.Images?.[0];
+  // const firstImage = publication.Images?.[0];
 
   return (
     <Link href={`/publication/${publication.id}`} className="card overflow-hidden hover:shadow-md transition-shadow">
-      <div className="aspect-video bg-gray-200 relative">
+      {/* <div className="aspect-video bg-gray-200 relative">
         {firstImage ? (
           <Image
             src={`${process.env.NEXT_PUBLIC_API_URL}/${firstImage.path_local}`}
@@ -26,7 +26,7 @@ export default function PublicationCard({ publication }: PublicationCardProps) {
             </svg>
           </div>
         )}
-      </div>
+      </div> */}
       
       <div className="p-4">
         <div className="flex items-center justify-between mb-2">

@@ -91,7 +91,7 @@ export default function HomePage() {
       </section>
 
       {/* Publications Section */}
-      <section className="py-12">
+      {/* <section className="py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl font-bold mb-6 text-center">Casos Clínicos Recentes</h2>
           
@@ -115,7 +115,7 @@ export default function HomePage() {
             </div>
           )}
         </div>
-      </section>
+      </section> */}
 
       {/* About Section */}
       <section className="py-16">
