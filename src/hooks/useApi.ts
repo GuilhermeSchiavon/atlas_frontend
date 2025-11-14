@@ -71,3 +71,16 @@ export function usePublication(id: string) {
     error
   };
 }
+
+export function useLegalPage(type: 'terms' | 'privacy') {
+  const { data, error, isLoading } = useSWR(
+    `/legal/${type}`,
+    () => api.getLegalPage(type)
+  );
+  
+  return {
+    page: data,
+    isLoading,
+    error
+  };
+}

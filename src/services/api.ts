@@ -131,6 +131,11 @@ class ApiService {
 
     return response.json();
   }
+
+  // Legal Pages
+  async getLegalPage(type: 'terms' | 'privacy'): Promise<{ id: number; type: string; title: string; content: string; updated_at: string }> {
+    return this.request<{ id: number; type: string; title: string; content: string; updated_at: string }>(`/api/v2/legal/${type}`);
+  }
 }
 
 export const api = new ApiService();
