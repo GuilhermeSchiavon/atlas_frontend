@@ -77,7 +77,7 @@ export default function CategorySelector({ selectedCategories, onCategoriesChang
   };
 
   const getSelectedCategoriesText = () => {
-    if (selectedCategories.length === 0) return 'Selecione as categorias';
+    if (selectedCategories.length === 0) return 'Selecione os temas';
     if (selectedCategories.length === 1) {
       const category = categories.find(c => c.id.toString() === selectedCategories[0]);
       return category ? category.title : 'Categoria selecionada';
@@ -117,7 +117,7 @@ export default function CategorySelector({ selectedCategories, onCategoriesChang
           <div className="p-2 border-b">
             <input
               type="text"
-              placeholder="Buscar categoria..."
+              placeholder="Buscar temas..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-primary"

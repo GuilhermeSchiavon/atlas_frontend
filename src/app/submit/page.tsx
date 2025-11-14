@@ -42,7 +42,7 @@ export default function SubmitPage() {
     body_location: '',
     patient_age: '',
     patient_skin_color: '',
-    category_ids: [],
+    category_ids: [] as string[],
   });
   const [images, setImages] = useState<ImageWithDescription[]>([]);
   const [checklistData, setChecklistData] = useState({});
