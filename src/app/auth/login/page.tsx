@@ -12,6 +12,9 @@ export default function LoginPage() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showResendVerification, setShowResendVerification] = useState(false);
+  const [userEmail, setUserEmail] = useState('');
+  const [isResending, setIsResending] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -35,7 +38,13 @@ export default function LoginPage() {
         window.location.href = '/';
       }
     } catch (err: any) {
-      setError(err.message || 'Email ou senha inválidos');
+      if (err.message?.includes('Email não verificado')) {
+        setShowResendVerification(true);
+        setUserEmail(formData.email);
+        setError('Sua conta ainda não foi verificada. Verifique seu email ou solicite um novo link de verificação.');
+      } else {
+        setError(err.message || 'Email ou senha inválidos');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -46,6 +55,20 @@ export default function LoginPage() {
       ...prev,
       [e.target.name]: e.target.value
     }));
+  };
+
+  const handleResendVerification = async () => {
+    setIsResending(true);
+    try {
+      const { api } = await import('@/services/api');
+      const response = await api.resendVerification(userEmail);
+      alert(response.message);
+      setShowResendVerification(false);
+    } catch (error: any) {
+      alert(error.message || 'Erro ao reenviar email');
+    } finally {
+      setIsResending(false);
+    }
   };
 
   return (
@@ -68,6 +91,18 @@ export default function LoginPage() {
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3">
                 {error}
+                {showResendVerification && (
+                  <div className="mt-3">
+                    <button
+                      type="button"
+                      onClick={handleResendVerification}
+                      disabled={isResending}
+                      className="text-sm bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 disabled:opacity-50"
+                    >
+                      {isResending ? 'Enviando...' : 'Reenviar email de verificação'}
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 

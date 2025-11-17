@@ -63,6 +63,31 @@ class ApiService {
     return this.request<{ user: User }>('/api/v2/users/profile');
   }
 
+  async verifyEmail(token: string): Promise<{ message: string; verified: boolean }> {
+    return this.request<{ message: string; verified: boolean }>(`/api/v2/users/verify-email?token=${token}`);
+  }
+
+  async resendVerification(email: string): Promise<{ message: string }> {
+    return this.request<{ message: string }>('/api/v2/users/resend-verification', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    });
+  }
+
+  async forgotPassword(email: string): Promise<{ message: string }> {
+    return this.request<{ message: string }>('/api/v2/users/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    });
+  }
+
+  async resetPassword(token: string, newPassword: string): Promise<{ message: string }> {
+    return this.request<{ message: string }>('/api/v2/users/reset-password', {
+      method: 'POST',
+      body: JSON.stringify({ token, newPassword }),
+    });
+  }
+
   // Categories
   async getCategories(): Promise<{ categories: Category[] }> {
     try {

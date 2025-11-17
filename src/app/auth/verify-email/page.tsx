@@ -5,7 +5,10 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function VerifyEmailPage() {
-  const [status, setStatus] = useState<'loading' | 'success' | 'error' | 'expired'>('loading');
+  const [status, setStatus] = useState<'loading' | 'success' | 'error' | 'expired' | 'no-token'>('loading');
+  const [message, setMessage] = useState('');
+  const [email, setEmail] = useState('');
+  const [isResending, setIsResending] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
   const token = searchParams.get('token');
@@ -14,24 +17,47 @@ export default function VerifyEmailPage() {
     if (token) {
       verifyEmail(token);
     } else {
-      setStatus('error');
+      setStatus('no-token');
     }
   }, [token]);
 
   const verifyEmail = async (token: string) => {
     try {
-      // Mock verification - replace with actual API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const { api } = await import('@/services/api');
+      const response = await api.verifyEmail(token);
       
-      // Mock successful verification
+      setMessage(response.message);
       setStatus('success');
       
       // Redirect to login after 3 seconds
       setTimeout(() => {
         router.push('/auth/login');
       }, 3000);
-    } catch (error) {
-      setStatus('error');
+    } catch (error: any) {
+      setMessage(error.message || 'Erro na verificação');
+      if (error.message?.includes('expirado')) {
+        setStatus('expired');
+      } else {
+        setStatus('error');
+      }
+    }
+  };
+
+  const handleResendVerification = async () => {
+    if (!email.trim()) {
+      alert('Por favor, digite seu email');
+      return;
+    }
+
+    setIsResending(true);
+    try {
+      const { api } = await import('@/services/api');
+      const response = await api.resendVerification(email);
+      alert(response.message);
+    } catch (error: any) {
+      alert(error.message || 'Erro ao reenviar email');
+    } finally {
+      setIsResending(false);
     }
   };
 
@@ -78,7 +104,7 @@ export default function VerifyEmailPage() {
             <p className="text-gray-600 mb-6">
               Não foi possível verificar seu email. O link pode estar inválido ou expirado.
             </p>
-            <div className="space-y-4">
+            <div className="flex flex-col space-y-4">
               <Link href="/auth/register" className="btn-primary block">
                 Criar nova conta
               </Link>
@@ -98,14 +124,63 @@ export default function VerifyEmailPage() {
               </svg>
             </div>
             <h2 className="text-2xl font-bold text-text mb-4">Link expirado</h2>
-            <p className="text-gray-600 mb-6">
-              O link de verificação expirou. Solicite um novo email de confirmação.
+            <p className="text-gray-600 mb-4">
+              {message || 'O link de verificação expirou. Solicite um novo email de confirmação.'}
             </p>
-            <div className="space-y-4">
-              <button className="btn-primary">
-                Reenviar email
-              </button>
+            <div className="flex flex-col space-y-4">
+              <div className="flex gap-2">
+                <input
+                  type="email"
+                  placeholder="Digite seu email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-primary focus:border-primary"
+                />
+                <button 
+                  onClick={handleResendVerification}
+                  disabled={isResending}
+                  className="btn-primary whitespace-nowrap"
+                >
+                  {isResending ? 'Enviando...' : 'Reenviar'}
+                </button>
+              </div>
               <Link href="/auth/login" className="text-primary hover:text-primary/80 block">
+                Voltar ao login
+              </Link>
+            </div>
+          </div>
+        );
+
+      case 'no-token':
+        return (
+          <div className="text-center">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <h2 className="text-2xl font-bold text-text mb-4">Verificação de Email</h2>
+            <p className="text-gray-600 mb-6">
+              Para verificar seu email, clique no link enviado para sua caixa de entrada.
+            </p>
+            <div className="flex flex-col space-y-4">
+              <div className="flex gap-2">
+                <input
+                  type="email"
+                  placeholder="Digite seu email para reenviar"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-primary focus:border-primary"
+                />
+                <button 
+                  onClick={handleResendVerification}
+                  disabled={isResending}
+                  className="btn-primary whitespace-nowrap"
+                >
+                  {isResending ? 'Enviando...' : 'Reenviar Email'}
+                </button>
+              </div>
+              <Link href="/auth/login" className="text-primary hover:text-primary/80">
                 Voltar ao login
               </Link>
             </div>
