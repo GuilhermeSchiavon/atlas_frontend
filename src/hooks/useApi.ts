@@ -44,6 +44,7 @@ export function usePublications(params?: {
   pageSize?: number;
   status?: string;
   category_ids?: number[];
+  profile?: boolean;
 }) {
   const { data, error, isLoading } = useSWR(
     ['/publications', params],

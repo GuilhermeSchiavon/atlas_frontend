@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePublication } from '@/hooks/useApi';
 import { useAuth } from '@/hooks/useAuth';
+import { useState } from 'react';
 
 interface PublicationPageProps {
   params: { id: string };
@@ -108,7 +109,7 @@ export default function PublicationPage({ params }: PublicationPageProps) {
                         />
                       </div>
                       <p className="text-sm text-gray-500 mt-2">
-                        Imagem {index + 1} de {(publication.Images ? publication.Images.length : 0)}
+                        {image.description}
                       </p>
                     </div>
                   ))}
@@ -167,6 +168,11 @@ export default function PublicationPage({ params }: PublicationPageProps) {
                 )}
               </dl>
             </div>
+
+            {/* Dermatology Checklist - Exibe se houver dados */}
+            {publication.checklist_data && Object.keys(publication.checklist_data).length > 0 && (
+              <CollapsibleChecklistDisplay checklistData={publication.checklist_data} />
+            )}
 
             {/* Publication Info */}
             <div className="bg-white shadow-sm p-6">
@@ -231,6 +237,67 @@ export default function PublicationPage({ params }: PublicationPageProps) {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function CollapsibleChecklistDisplay({ checklistData }: { checklistData: any }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  if (!checklistData || Object.values(checklistData).filter(Boolean).length === 0) return null;
+
+  return (
+    <div className="bg-white shadow-sm p-6">
+      <button
+        type="button"
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="flex items-center justify-between w-full text-left"
+      >
+        <h3 className="font-semibold text-lg">Informações Adicionais</h3>
+        <svg
+          className={`w-5 h-5 transform transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      
+      {isExpanded && (
+        <div className="mt-4 space-y-3">
+          {Object.entries(checklistData).map(([key, value]) => {
+            if (!value) return null;
+            
+            return (
+              <div key={key}>
+                <dt className="text-sm font-medium text-gray-500">
+                  {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                </dt>
+                <dd className="text-sm text-gray-900">
+                  {Array.isArray(value) ? (
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {value.map((item, index) => (
+                        <span key={index} className="inline-flex items-center px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded">
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  ) : typeof value === 'boolean' ? (
+                    <span className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded ${
+                      value ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                    }`}>
+                      {value ? 'Sim' : 'Não'}
+                    </span>
+                  ) : (
+                    String(value)
+                  )}
+                </dd>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

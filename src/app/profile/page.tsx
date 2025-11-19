@@ -29,7 +29,7 @@ export default function ProfilePage() {
   }, [router, searchParams]);
 
   // Buscar publicações do usuário
-  const { publications, isLoading, error } = usePublications();
+  const { publications, isLoading, error } = usePublications({profile: true});
 
   if (!user) {
     return (

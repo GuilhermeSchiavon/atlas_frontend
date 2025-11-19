@@ -53,13 +53,13 @@ export default function PublicationCard({ publication }: PublicationCardProps) {
                   e.stopPropagation();
                   router.push(`/categoria/${category.slug || category.id}`);
                 }}
-                className="text-xs bg-primary/70 text-white px-2 py-1 hover:bg-primary/90 cursor-pointer"
+                className="max-w-xs text-xs bg-primary/70 text-white px-2 py-1 hover:bg-primary/90 cursor-pointer line-clamp-1 leading-7"
               >
                 {category.title}
               </span>
             ))}
             {publication.Categories && publication.Categories.length > 2 && (
-              <span className="text-xs bg-gray-500 text-white px-2 py-1">
+              <span className="flex text-center items-center text-xs bg-gray-500 text-white px-2 py-1">
                 +{publication.Categories.length - 2}
               </span>
             )}
