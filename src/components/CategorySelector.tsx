@@ -45,7 +45,7 @@ export default function CategorySelector({ selectedCategories, onCategoriesChang
   const loadCategories = async () => {
     try {
       const response = await api.getCategories();
-      setCategories(response.categories);
+      setCategories(response.itens);
     } catch (error) {
       console.error('Erro ao carregar categorias:', error);
     } finally {
@@ -64,9 +64,9 @@ export default function CategorySelector({ selectedCategories, onCategoriesChang
     if (!newCategoryTitle.trim()) return;
 
     try {
-      const response = await api.createCategory(newCategoryTitle.trim());
-      setCategories([...categories, response.category]);
-      onCategoriesChange([...selectedCategories, response.category.id.toString()]);
+      const newCategory = await api.createCategory(newCategoryTitle.trim());
+      setCategories([...categories, newCategory]);
+      onCategoriesChange([...selectedCategories, newCategory.id.toString()]);
       setNewCategoryTitle('');
       setIsCreating(false);
       setSearchTerm('');

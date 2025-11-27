@@ -1,12 +1,11 @@
 import useSWR from 'swr';
 import { api } from '@/services/api';
-import { Category, Publication } from '@/types';
 
 export function useCategories() {
   const { data, error, isLoading } = useSWR('/categories', () => api.getCategories());
   
   return {
-    categories: data?.categories || [],
+    categories: data?.itens || [],
     isLoading,
     error
   };
@@ -32,7 +31,7 @@ export function useCategory(id: string) {
   );
   
   return {
-    category: data?.category,
+    category: data,
     isLoading,
     error
   };
@@ -47,12 +46,12 @@ export function usePublications(params?: {
   profile?: boolean;
 }) {
   const { data, error, isLoading } = useSWR(
-    ['/publications', params],
+    params !== undefined ? ['/publications', params] : ['/publications', {}],
     () => api.getPublications(params)
   );
   
   return {
-    publications: data?.publications || [],
+    publications: data?.itens || [],
     total: data?.total || 0,
     pages: data?.pages || 0,
     isLoading,
@@ -67,7 +66,7 @@ export function usePublication(id: string) {
   );
   
   return {
-    publication: data?.publication,
+    publication: data,
     isLoading,
     error
   };

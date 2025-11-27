@@ -89,17 +89,17 @@ class ApiService {
   }
 
   // Categories
-  async getCategories(): Promise<{ categories: Category[] }> {
+  async getCategories(): Promise<{ itens: Category[] }> {
     try {
-      return await this.request<{ categories: Category[] }>('/api/v2/categories');
+      return await this.request<{ itens: Category[] }>('/api/v2/categories');
     } catch (error) {
       console.error('Error fetching categories:', error);
       throw error;
     }
   }
 
-  async getCategory(idOrSlug: string): Promise<{ category: Category }> {
-    return this.request<{ category: Category }>(`/api/v2/categories/${idOrSlug}`);
+  async getCategory(idOrSlug: string): Promise<Category> {
+    return this.request<Category>(`/api/v2/categories/${idOrSlug}`);
   }
 
   async getFeaturedCategories(limit?: number): Promise<{ categories: Category[] }> {
@@ -112,8 +112,8 @@ class ApiService {
     }
   }
 
-  async createCategory(title: string, description?: string): Promise<{ category: Category }> {
-    return this.request<{ category: Category }>('/api/v2/categories', {
+  async createCategory(title: string, description?: string): Promise<Category> {
+    return this.request<Category>('/api/v2/categories', {
       method: 'POST',
       body: JSON.stringify({ title, description }),
     });
@@ -126,21 +126,29 @@ class ApiService {
     pageSize?: number;
     status?: string;
     category_ids?: number[];
-  }): Promise<{ publications: Publication[]; total: number; pages: number }> {
+    profile?: boolean;
+  }): Promise<{ itens: Publication[]; total: number; pages: number }> {
+    if (params) {
+      // Remove category_ids if empty array
+      if (params.category_ids && params.category_ids.length === 0) {
+        delete params.category_ids;
+      }
+    }
+    
     const query = params ? `?${new URLSearchParams(params as any).toString()}` : '';
     try {
-      return await this.request<{ publications: Publication[]; total: number; pages: number }>(`/api/v2/publications${query}`);
+      return await this.request<{ itens: Publication[]; total: number; pages: number }>(`/api/v2/publications${query}`);
     } catch (error) {
       console.error('Error fetching publications:', error);
       throw error;
     }
   }
 
-  async getPublication(id: string): Promise<{ publication: Publication }> {
-    return this.request<{ publication: Publication }>(`/api/v2/publications/${id}`);
+  async getPublication(id: string): Promise<Publication> {
+    return this.request<Publication>(`/api/v2/publications/${id}`);
   }
 
-  async createPublication(formData: FormData): Promise<{ publication: Publication }> {
+  async createPublication(formData: FormData): Promise<Publication> {
     const token = Cookies.get('token');
     const response = await fetch(`${API_BASE_URL}/api/v2/publications/upload`, {
       method: 'POST',

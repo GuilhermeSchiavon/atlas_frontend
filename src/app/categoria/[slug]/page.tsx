@@ -13,9 +13,9 @@ export default function CategoriaPage({ params }: CategoriaPageProps) {
   const categoryId = isNumeric ? params.slug : null;
   
   const { category, isLoading: categoryLoading, error: categoryError } = useCategory(categoryId || params.slug);
-  const { publications, isLoading: publicationsLoading, error: publicationsError } = usePublications({ 
-    category_ids: category?.id ? [category.id] : undefined
-  });
+  const { publications, isLoading: publicationsLoading, error: publicationsError } = usePublications(
+    category?.id ? { category_ids: [category.id] } : undefined
+  );
 
   if (categoryError || publicationsError) {
     return (
