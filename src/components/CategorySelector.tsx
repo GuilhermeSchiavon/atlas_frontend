@@ -66,7 +66,7 @@ export default function CategorySelector({ selectedCategories, onCategoriesChang
 
     try {
       const response = await api.createCategory(newCategoryTitle.trim());
-      const newCategory = response.item || response;
+      const newCategory = (response as any).item || response as Category;
       const updatedCategories = [...categories, newCategory];
       setCategories(updatedCategories);
       onCategoriesChange([...selectedCategories, newCategory.id.toString()]);
