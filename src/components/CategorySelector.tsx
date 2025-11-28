@@ -25,7 +25,7 @@ export default function CategorySelector({ selectedCategories, onCategoriesChang
 
   useEffect(() => {
     const filtered = categories.filter(category =>
-      category.title.toLowerCase().includes(searchTerm.toLowerCase())
+      category && category.title && category.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredCategories(filtered);
   }, [categories, searchTerm]);
@@ -45,7 +45,8 @@ export default function CategorySelector({ selectedCategories, onCategoriesChang
   const loadCategories = async () => {
     try {
       const response = await api.getCategories();
-      setCategories(response.itens);
+      const validCategories = response.itens.filter(category => category && category.title);
+      setCategories(validCategories);
     } catch (error) {
       console.error('Erro ao carregar categorias:', error);
     } finally {
@@ -64,12 +65,15 @@ export default function CategorySelector({ selectedCategories, onCategoriesChang
     if (!newCategoryTitle.trim()) return;
 
     try {
-      const newCategory = await api.createCategory(newCategoryTitle.trim());
-      setCategories([...categories, newCategory]);
+      const response = await api.createCategory(newCategoryTitle.trim());
+      const newCategory = response.item || response;
+      const updatedCategories = [...categories, newCategory];
+      setCategories(updatedCategories);
       onCategoriesChange([...selectedCategories, newCategory.id.toString()]);
       setNewCategoryTitle('');
       setIsCreating(false);
       setSearchTerm('');
+      setIsOpen(false);
     } catch (error) {
       console.error('Erro ao criar categoria:', error);
       alert('Erro ao criar categoria');

@@ -314,7 +314,7 @@ export default function SubmitPage() {
               </button>
               <button
                 type="submit"
-                disabled={isLoading || images.length === 0}
+                disabled={isLoading || images.length === 0 || formData.category_ids.length === 0}
                 className="btn-primary px-6 py-2 disabled:opacity-50"
               >
                 {isLoading ? 'Enviando...' : 'Enviar Publicação'}
