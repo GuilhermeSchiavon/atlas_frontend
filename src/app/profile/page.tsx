@@ -6,6 +6,7 @@ import { getUser } from '@/utils/auth';
 import { User } from '@/types';
 import PublicationCard from '@/components/PublicationCard';
 import { usePublications } from '@/hooks/useApi';
+import ProfileSettings from '@/components/ProfileSettings';
 
 export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);
@@ -78,8 +79,24 @@ export default function ProfilePage() {
         <div className="bg-white shadow-sm mb-8">
           <div className="px-6 py-8">
             <div className="flex items-center space-x-6">
-              <div className="w-20 h-20 bg-primary text-white rounded-full flex items-center justify-center text-2xl font-bold">
-                {user.firstName.charAt(0)}{user.lastName.charAt(0)}
+              <div className="w-20 h-20 bg-primary text-white rounded flex items-center justify-center text-2xl font-bold overflow-hidden">
+                {user.image ? (
+                  <img 
+                    src={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1000'}/${user.image}`} 
+                    alt="Perfil" 
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const img = e.target as HTMLImageElement;
+                      img.style.display = 'none';
+                      const parent = img.parentElement;
+                      if (parent) {
+                        parent.innerHTML = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`;
+                      }
+                    }}
+                  />
+                ) : (
+                  `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`
+                )}
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-text">
@@ -188,73 +205,7 @@ export default function ProfilePage() {
             )}
 
             {activeTab === 'settings' && (
-              <div>
-                <h2 className="text-xl font-semibold text-text mb-6">Configurações da Conta</h2>
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Informações Pessoais</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">Nome</label>
-                        <input
-                          type="text"
-                          value={user.firstName}
-                          className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-gray-50"
-                          disabled
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">Sobrenome</label>
-                        <input
-                          type="text"
-                          value={user.lastName}
-                          className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-gray-50"
-                          disabled
-                        />
-                      </div>
-                      <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700">Email</label>
-                        <input
-                          type="email"
-                          value={user.email}
-                          className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-gray-50"
-                          disabled
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-4">Alterar Senha</h3>
-                    <div className="space-y-4 max-w-md">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">Senha Atual</label>
-                        <input
-                          type="password"
-                          className="mt-1 block w-full px-3 py-2 border border-gray-300 focus:ring-primary focus:border-primary"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">Nova Senha</label>
-                        <input
-                          type="password"
-                          className="mt-1 block w-full px-3 py-2 border border-gray-300 focus:ring-primary focus:border-primary"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">Confirmar Nova Senha</label>
-                        <input
-                          type="password"
-                          className="mt-1 block w-full px-3 py-2 border border-gray-300 focus:ring-primary focus:border-primary"
-                        />
-                      </div>
-                      <button className="btn-primary">
-                        Alterar Senha
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <ProfileSettings user={user} setUser={setUser} />
             )}
           </div>
         </div>

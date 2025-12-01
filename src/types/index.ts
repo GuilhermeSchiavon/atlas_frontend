@@ -9,6 +9,7 @@ export interface User {
   especialidade: 'Urologista' | 'Dermatologista';
   accounType: 'adm' | 'associado';
   status: 'ativo' | 'inativo' | 'pendente' | 'banida';
+  image?: string;
 }
 
 export interface Category {

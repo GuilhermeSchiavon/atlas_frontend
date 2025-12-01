@@ -14,6 +14,7 @@ interface PublicationPageProps {
 export default function PublicationPage({ params }: PublicationPageProps) {
   const { isLoading: authLoading } = useAuth(true); // Requer autenticação
   const { publication, isLoading, error } = usePublication(params.id);
+  const [imagePreview] = useState<string | null>(null);
 
   // Mostrar loading enquanto verifica autenticação
   if (authLoading) {
@@ -178,9 +179,31 @@ export default function PublicationPage({ params }: PublicationPageProps) {
             <div className="bg-white shadow-sm p-6">
               <h3 className="font-semibold text-lg mb-4">Informações da Publicação</h3>
               <dl className="space-y-3">
+                <div className="w-24 h-24 bg-primary text-white rounded flex items-center justify-center text-2xl font-bold overflow-hidden">
+                  {imagePreview ? (
+                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                  ) : publication.Author?.image ? (
+                    <img 
+                      src={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1200'}/${publication.Author?.image}`} 
+                      alt="Perfil" 
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const img = e.target as HTMLImageElement;
+                        img.style.display = 'none';
+                        const parent = img.parentElement;
+                        if (parent) {
+                          parent.innerHTML = `${publication.Author?.firstName.charAt(0)}${publication.Author?.lastName.charAt(0)}`;
+                        }
+                      }}
+                    />
+                  ) : (
+                    `${publication.Author?.firstName.charAt(0)}${publication.Author?.lastName.charAt(0)}`
+                  )}
+                </div>
                 <div>
                   <dt className="text-sm font-medium text-gray-500">Autor</dt>
                   <dd className="text-sm text-gray-900">
+                  {publication.Author?.image}
                     {publication.Author?.firstName} {publication.Author?.lastName}
                   </dd>
                 </div>

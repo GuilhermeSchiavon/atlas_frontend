@@ -119,6 +119,39 @@ class ApiService {
     });
   }
 
+  // Profile
+  async updateProfile(userData: {
+    firstName?: string;
+    lastName?: string;
+    cpf?: string;
+    crm?: string;
+    uf?: string;
+    especialidade?: string;
+  }): Promise<{ message: string; user: User }> {
+    return this.request<{ message: string; user: User }>('/api/v2/users/profile', {
+      method: 'PUT',
+      body: JSON.stringify(userData),
+    });
+  }
+
+  async uploadProfileImage(formData: FormData): Promise<{ message: string; imagePath: string }> {
+    const token = Cookies.get('token');
+    const response = await fetch(`${API_BASE_URL}/api/v2/users/profile/image`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `API Error: ${response.status}`);
+    }
+
+    return response.json();
+  }
+
   // Publications
   async getPublications(params?: {
     keyword?: string;
