@@ -28,7 +28,7 @@ export default function CategoriesPage() {
             Temas do Atlas
           </h1>
           <p className="text-gray-600 text-lg mb-8">
-            Explore todas as temas do Atlas de Dermatologia do Genital Masculino
+            Explore todos os temas do Atlas de Uro-dermatologia
           </p>
           <SearchBar />
         </div>

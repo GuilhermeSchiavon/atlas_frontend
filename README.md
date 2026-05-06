@@ -1,6 +1,6 @@
-# Atlas de Dermatologia do Genital Masculino - Frontend
+# Atlas de Uro-dermatologia - Frontend
 
-Frontend desenvolvido em Next.js para o Atlas de Dermatologia do Genital Masculino.
+Frontend desenvolvido em Next.js para o Atlas de Uro-dermatologia.
 
 ## Tecnologias
 

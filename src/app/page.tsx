@@ -27,11 +27,11 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Atlas de Dermatologia do 
-              <span className='text-secondary whitespace-nowrap'> Genital Masculino</span>
+              Atlas de 
+              <span className='text-secondary whitespace-nowrap'> Uro-dermatologia</span>
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-gray-200">
-              Referência científica em dermatologia genital masculina para profissionais da saúde
+              Referência científica em uro-dermatologia para profissionais da saúde
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/categorias" className="btn-secondary text-lg px-8 py-3">
@@ -126,9 +126,8 @@ export default function HomePage() {
                 Sobre o Atlas
               </h2>
               <p className="text-gray-600 mb-4">
-                O Atlas de Dermatologia do Genital Masculino é uma iniciativa científica 
-                que reúne casos clínicos e conhecimento especializado em dermatologia 
-                genital masculina.
+                O Atlas de Uro-dermatologia é uma iniciativa científica 
+                que reúne casos clínicos e conhecimento especializado em uro-dermatologia.
               </p>
               <p className="text-gray-600 mb-6">
                 Desenvolvido por e para profissionais da saúde, oferece uma referência 
