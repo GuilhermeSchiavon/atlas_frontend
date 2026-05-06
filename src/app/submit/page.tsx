@@ -132,7 +132,7 @@ export default function SubmitPage() {
           <div className="px-6 py-4 border-b border-gray-200">
             <h1 className="text-2xl font-bold text-text">Nova Publicação</h1>
             <p className="text-gray-600 mt-1">
-              Contribua com o Atlas Dermatológico enviando um novo caso clínico
+              Contribua com o Atlas de Uro-dermatologia enviando um novo caso clínico
             </p>
           </div>
 
