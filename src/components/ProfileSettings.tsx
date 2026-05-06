@@ -15,6 +15,16 @@ const UF_OPTIONS = [
   'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
 ];
 
+const SPECIALTY_OPTIONS = [
+  'Alergologia',
+  'Clínica médica',
+  'Dermatologia',
+  'Infectologia',
+  'Medicina da família e Comunidade',
+  'Patologia',
+  'Urologia'
+];
+
 export default function ProfileSettings({ user, setUser }: ProfileSettingsProps) {
   const [formData, setFormData] = useState({
     firstName: user.firstName,
@@ -265,8 +275,11 @@ export default function ProfileSettings({ user, setUser }: ProfileSettingsProps)
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 focus:ring-primary focus:border-primary"
               >
                 <option value="">Selecione</option>
-                <option value="Urologista">Urologista</option>
-                <option value="Dermatologista">Dermatologista</option>
+                {SPECIALTY_OPTIONS.map((specialty) => (
+                  <option key={specialty} value={specialty}>
+                    {specialty}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
