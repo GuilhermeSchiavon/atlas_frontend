@@ -394,11 +394,21 @@ export default function RegisterPage() {
               />
               <label htmlFor="acceptTerms" className="ml-2 block text-sm text-gray-900">
                 Aceito os{' '}
-                <Link href="/terms" className="text-primary hover:text-primary/80">
+                <Link
+                  href="/terms"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-primary underline underline-offset-2 hover:text-primary/80"
+                >
                   termos de uso
                 </Link>{' '}
                 e{' '}
-                <Link href="/privacy" className="text-primary hover:text-primary/80">
+                <Link
+                  href="/privacy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-primary underline underline-offset-2 hover:text-primary/80"
+                >
                   política de privacidade
                 </Link>
               </label>

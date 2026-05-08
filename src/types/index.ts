@@ -6,7 +6,7 @@ export interface User {
   cpf?: string;
   crm: string;
   uf: string;
-  especialidade: 'Alergologia' | 'Clínica médica' | 'Dermatologia' | 'Infectologia' | 'Medicina da família e Comunidade' | 'Patologia' | 'Urologia';
+  especialidade: 'Alergologia' | 'Clínica médica' | 'Dermatologia' | 'Infectologia' | 'Medicina da família e Comunidade' | 'Outra' | 'Patologia' | 'Urologia';
   accounType: 'adm' | 'associado';
   status: 'ativo' | 'inativo' | 'pendente' | 'banida';
   image?: string;

@@ -21,6 +21,7 @@ const SPECIALTY_OPTIONS = [
   'Dermatologia',
   'Infectologia',
   'Medicina da família e Comunidade',
+  'Outra',
   'Patologia',
   'Urologia'
 ];
