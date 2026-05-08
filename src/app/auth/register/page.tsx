@@ -310,6 +310,7 @@ export default function RegisterPage() {
                 <option value="Medicina da família e Comunidade">Medicina da família e Comunidade</option>
                 <option value="Patologia">Patologia</option>
                 <option value="Urologia">Urologia</option>
+                <option value="Outra">Outra</option>
               </select>
             </div>
 
