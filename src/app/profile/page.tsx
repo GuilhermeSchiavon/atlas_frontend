@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getUser } from '@/utils/auth';
 import { User } from '@/types';
@@ -8,7 +8,7 @@ import PublicationCard from '@/components/PublicationCard';
 import { usePublications } from '@/hooks/useApi';
 import ProfileSettings from '@/components/ProfileSettings';
 
-export default function ProfilePage() {
+function ProfileContent() {
   const [user, setUser] = useState<User | null>(null);
   const [activeTab, setActiveTab] = useState('publications');
   const [showSuccess, setShowSuccess] = useState(false);
@@ -211,5 +211,13 @@ export default function ProfilePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ProfilePage() {
+  return (
+    <Suspense fallback={null}>
+      <ProfileContent />
+    </Suspense>
   );
 }
